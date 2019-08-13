@@ -1,2 +1,2 @@
-# codingground
-Main Repository for Coding Ground
+# Code Play Ground
+Small school projects and ideas.
