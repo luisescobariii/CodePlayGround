@@ -1,9 +1,9 @@
-var count = 50;
+var count = 100;
 
 var values, barWidth, stepHeight, algorithm;
 
 function setup() {
-  createCanvas(600, 400);
+  createCanvas(800, 600);
   frameRate(60);
   initInterface();
   values = [];
@@ -25,13 +25,13 @@ function draw() {
     rect(
       barWidth * i, height - stepHeight * values[i],
       barWidth, stepHeight * values[i]
-    );
+      );
+    }
+    
+    drawInterface();
+    
+    if (algorithm.done) {
+      noLoop(); return;
+    }
+    algorithm.step();
   }
-  
-  drawInterface();
-  
-  if (algorithm.done) {
-    noLoop(); return;
-  }
-  algorithm.step();
-}
