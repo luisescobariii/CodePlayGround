@@ -1,2 +1,2 @@
-# Code Play Ground
+# Homework
 Small school projects and ideas.
