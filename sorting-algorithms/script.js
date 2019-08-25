@@ -13,6 +13,12 @@ const ResultValues = {
 var worker;
 
 async function RunTests() {
+    let input = document.getElementById('inCounts').value.trim();
+    if (input != '') {
+        ResultValues.counts = input.split(',');
+    } else {
+        ResultValues.counts = [100, 1000, 10000, 100000];
+    }
     worker = new Worker('worker.js');    
     worker.onmessage = e => {
         let {duration, alg, i} = e.data;
@@ -36,7 +42,6 @@ async function RunTests() {
         }
     }
 }
-
 
 RunTests();
 
