@@ -11,12 +11,12 @@ onmessage = e => {
 async function SortVector(vector, algorithm, index) {
     let selectedAlgorithm, beginTime, endTime;
     switch (algorithm) {
-        case Algorithms.Bubble: selectedAlgorithm = BubbleSort; break;
-        case Algorithms.Selection: selectedAlgorithm = SelectionSort; break;
-        case Algorithms.Insertion: selectedAlgorithm = InsertionSort; break;
-        case Algorithms.Shell: selectedAlgorithm = ShellSort; break;
-        case Algorithms.Merge: selectedAlgorithm = MergeSort; break;
-        case Algorithms.Quick: selectedAlgorithm = QuickSort; break;
+        case 'Bubble': selectedAlgorithm = BubbleSort; break;
+        case 'Selection': selectedAlgorithm = SelectionSort; break;
+        case 'Insertion': selectedAlgorithm = InsertionSort; break;
+        case 'Shell': selectedAlgorithm = ShellSort; break;
+        case 'Merge': selectedAlgorithm = MergeSort; break;
+        case 'Quick': selectedAlgorithm = QuickSort; break;
     }
     
     beginTime = window.performance.now();
