@@ -13,7 +13,7 @@ var worker;
 async function RunTests() {
     let input = document.getElementById('inCounts').value.trim();
     if (input != '') {
-        ResultValues.counts = input.split(',');
+        ResultValues.counts = input.split(',').map(v => v * 1);
     } else {
         ResultValues.counts = [10000, 40000, 60000, 100000, 400000, 700000, 800000];
     }
