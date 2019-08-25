@@ -1,179 +1,183 @@
 const Algorithms = {
-    Bubble: 'Bubble',
-    Selection: 'Selection',
-    Insertion: 'Insertion',
-    Shell: 'Shell',
+    Quick: 'Quick',
     Merge: 'Merge',
-    Quick: 'Quick'
+    Shell: 'Shell',
+    Insertion: 'Insertion',
+    Selection: 'Selection',
+    Bubble: 'Bubble',
+};
+const ResultValues = {
+    counts: [10000, 40000, 60000, 100000, 400000, 700000, 800000]
 };
 
-async function test(len) {
-    let vector = [];
-    for (let i = 0; i < len; i++) { vector.push(Math.random()); }    
-    return [
-        //await SortVector(vector, Algorithms.Bubble),
-        //await SortVector(vector, Algorithms.Selection),
-        //await SortVector(vector, Algorithms.Insertion),
-        await SortVector(vector, Algorithms.Shell),
-        await SortVector(vector, Algorithms.Merge),
-        await SortVector(vector, Algorithms.Quick)
-    ];    
-}
+var worker;
 
-
-/**
-* Sorts the given vector in place using the selected algorithm.
-* @param {number[]} vector 
-* @param {Algorithm} algorithm 
-*/
-async function SortVector(vector, algorithm) {
-    let selectedAlgorithm, beginTime, endTime;
-    switch (algorithm) {
-        case Algorithms.Bubble: selectedAlgorithm = BubbleSort; break;
-        case Algorithms.Selection: selectedAlgorithm = SelectionSort; break;
-        case Algorithms.Insertion: selectedAlgorithm = InsertionSort; break;
-        case Algorithms.Shell: selectedAlgorithm = ShellSort; break;
-        case Algorithms.Merge: selectedAlgorithm = MergeSort; break;
-        case Algorithms.Quick: selectedAlgorithm = QuickSort; break;
-    }
-    
-    beginTime = window.performance.now();
-    let result = selectedAlgorithm(vector);
-    endTime = window.performance.now();
-    //LogVector(result);
-    
-    return algorithm + ': ' + FormatDuration(endTime - beginTime);    
-}
-
-
-// ALGORITHMS
-
-function BubbleSort(vector) {
-    vector = [...vector];
-    let temp, nSorted = true, n = vector.length;
-    while (n > 1) {
-        nSorted = false;
-        for (let i = 1; i < n; i++) {
-            if (vector[i - 1] > vector[i]) {
-                // Swap
-                temp = vector[i];
-                vector[i] = vector[i - 1];
-                vector[i - 1] = temp;
-                
-                nSorted = i;
-            }
-        }
-        n = nSorted;
-    }
-    return vector;
-}
-
-function SelectionSort(vector) {
-    vector = [...vector];
-    let temp, n = vector.length;
-    for (let i = 0; i < n - 1; i++) {
-        let min = i;
-        for (let j = i + 1; j < n; j++) {
-            if (vector[j] < vector[min]) {
-                min = j;
-            }
-        }        
-        if (min != i) {
-            // Swap
-            temp = vector[i];
-            vector[i] = vector[min];
-            vector[min] = temp;
-        }
-    }
-    return vector;
-}
-
-function InsertionSort(vector) {
-    vector = [...vector];
-    let temp, j, n = vector.length;
-    for (let i = 1; i < n; i++) {
-        temp = vector[i];
-        for (j = i - 1; j >= 0 && vector[j] > temp; j--) {
-            vector[j + 1] = vector[j];
-        }
-        vector[j + 1] = temp;
-    }
-    return vector;
-}
-
-function ShellSort(vector) {
-    vector = [...vector];
-    let temp, j, n = vector.length, gap = Math.floor(n / 2);
-    while (gap > 0) {
-        for (let i = gap; i < n; i++) {
-            temp = vector[i];
-            for (j = i; j >= gap && vector[j - gap] > temp; j-= gap) {
-                vector[j] = vector[j - gap];
-            }
-            vector[j] = temp;
-        }
-        gap = Math.floor(gap / 2);
-    }
-    return vector;
-}
-
-// Begin MergeSort
-
-function MergeSort(vector) {
-    if(vector.length <= 1) { return vector; }    
-    var { leftHalf, rigthHalf } = SplitList(vector);
-    return JointLists(MergeSort(leftHalf), MergeSort(rigthHalf));
-  }
-  
-  function SplitList(vector){
-    if (vector.length == 0) return {leftHalf : [], rigthHalf: []};
-    if (vector.length == 1) return {leftHalf : vector , rigthHalf : []};
-    var index = Math.floor(vector.length / 2);
-    return {leftHalf : vector.slice(0, index), rigthHalf : vector.slice(index)};
-  }
-  
-  function JointLists(vector1, vector2){
-    var [result, i, j] = [[], 0, 0];
-    while(true){
-      if(vector1[i] < vector2[j]){
-        result.push(vector1[i]);
-        i++;
-      } else {
-        result.push(vector2[j]);
-        j++;
-      }
-      if(i == vector1.length || j == vector2.length) { break; }
-    }
-    if(i < vector1.length) return result.concat(vector1.slice(i));
-    if(j < vector2.length) return result.concat(vector2.slice(j));
-    return result;
-  }
-
-// End MergeSort
-
-function QuickSort(vector) {
-    if (vector.length == 0) { return []; }
-    let left = [], right = [], pivot = vector[0];
-    for (let i = 1; i < vector.length; i++) {
-        if(vector[i] < pivot) {
-            left.push(vector[i]);
-        } else {
-            right.push(vector[i]);
-        }
+async function RunTests() {
+    worker = new Worker('worker.js');    
+    worker.onmessage = e => {
+        let {duration, alg, i} = e.data;
+        ResultValues[alg][i] = duration;
+        UpdateChartData();
     };
-    return [...QuickSort(left), pivot, ...QuickSort(right)];
+    
+    for (let alg of Object.keys(Algorithms)) {
+        ResultValues[alg] = ResultValues.counts.map(c => 0);
+    }
+    CreateCharts();
+    UpdateChartData();
+    
+    let vectors = ResultValues.counts.map(c => GetShuffledVector(c));
+    
+    for (let alg of Object.keys(Algorithms)) {
+        for (let i = 0; i < vectors.length; i++) {
+            worker.postMessage({ vector: vectors[i], alg: alg, i: i });
+        }
+    }    
+    console.table(ResultValues);
+}
+
+
+RunTests();
+
+// CHARTS
+
+var Charts, ChartConfigs;
+
+function UpdateChartData() {
+    let half = Math.floor(ResultValues.counts.length / 2);
+    
+    let data = [];
+    for (let alg of ChartConfigs.fasts) {
+        let values = [];
+        for (let i = 0; i < half; i++) {
+            values.push(ResultValues[alg][i]);
+        }
+        data.push({ name: alg, data: values });
+    }
+    
+    Charts[0].updateSeries(data);
+    
+    data = [];
+    for (let alg of ChartConfigs.fasts) {
+        let values = [];
+        for (let i = half; i < ResultValues.counts.length; i++) {
+            values.push(ResultValues[alg][i]);
+        }
+        data.push({ name: alg, data: values });
+    }
+    Charts[1].updateSeries(data);
+    
+    data = [];
+    for (let alg of ChartConfigs.slows) {
+        let values = [];
+        for (let i = 0; i < half; i++) {
+            values.push(ResultValues[alg][i]);
+        }
+        data.push({ name: alg, data: values });
+    }
+    Charts[2].updateSeries(data);
+    
+    data = [];
+    for (let alg of ChartConfigs.slows) {
+        let values = [];
+        for (let i = half; i < ResultValues.counts.length; i++) {
+            values.push(ResultValues[alg][i]);
+        }
+        data.push({ name: alg, data: values });
+    }
+    Charts[3].updateSeries(data);
+}
+
+function CreateCharts() {
+    let options = {
+        chart: {
+            type: 'bar'
+        },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+                endingShape: 'rounded'	
+            },
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        series: [],
+        yaxis: {
+            
+        },
+        xaxis: {
+            categories: [],
+            title: {
+                text: 'Time (μs)'
+            }
+        },
+        fill: {
+            opacity: 1            
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return FormatDuration(val)
+                }
+            }
+        }
+    }
+    ChartConfigs = {slows: [], fasts: [], shorts: [], longs: []}
+    
+    let keys = Object.keys(Algorithms);
+    let half = Math.floor(keys.length / 2);
+    for (let i = 0; i < keys.length; i++) {
+        if (i < half) {
+            ChartConfigs.fasts.push(keys[i]);
+        } else {
+            ChartConfigs.slows.push(keys[i]);
+        }
+    }
+    
+    half = Math.floor(ResultValues.counts.length / 2);
+    for (let i = 0; i < ResultValues.counts.length; i++) {
+        if (i < half) {
+            ChartConfigs.shorts.push(ResultValues.counts[i]);
+        } else {
+            ChartConfigs.longs.push(ResultValues.counts[i]);
+        }
+    }
+    
+    Charts = [];
+    
+    options.xaxis.categories = ChartConfigs.shorts;
+    Charts.push(new ApexCharts(document.querySelector("#chart0"), options));
+    options.xaxis.categories = ChartConfigs.longs;
+    Charts.push(new ApexCharts(document.querySelector("#chart1"), options));
+    options.xaxis.categories = ChartConfigs.shorts;
+    Charts.push(new ApexCharts(document.querySelector("#chart2"), options));
+    options.xaxis.categories = ChartConfigs.longs;
+    Charts.push(new ApexCharts(document.querySelector("#chart3"), options));
+    
+    Charts.forEach(c => c.render());
+    console.log(ChartConfigs);
 }
 
 // UTILITIES
 
 function FormatDuration(duration) {
-    let millis = Math.floor(duration % 1000);
-    let micros = Math.floor((duration - Math.floor(duration)) * 1000);
-    let min = Math.floor(duration / 60000).toString().padStart(2, '0');
-    let sec = Math.floor(duration / 1000).toString().padStart(2, '0');
-    let mil = millis.toString().padStart(3, '0');
-    let mic = micros.toString().padStart(3, '0');
-    return `${min}:${sec}.${mil}.${mic}`;
+    let micros = Math.floor(duration % 1000);
+    let millis = Math.floor(duration / 1000);
+    let seconds = Math.floor(duration / 1000000);
+    let minutes = Math.floor(duration / 60000000);
+    
+    let time = `${micros}μs`;
+    if (millis > 0) { time = `${millis}ms ` + time; }
+    if (seconds > 0) { time = `${seconds}s ` + time; }
+    if (minutes > 0) { time = `${minutes}m ` + time; }
+    
+    return time;
 }
 
 function LogVector(vector) {
@@ -183,4 +187,20 @@ function LogVector(vector) {
         visual.push(str);
     }
     console.log(visual);
+}
+
+function GetShuffledVector(len) {
+    let vector = [...Array(len).keys()];
+    
+    for (let i = len - 1; i > 0; i--) {
+        let rand = Math.floor(Math.random() * i);
+        let temp = vector[i];
+        vector[i] = vector[rand];
+        vector[rand] = temp;
+    }
+    return vector;
+}
+
+function Sleep (time) {
+    return new Promise(resolve => setTimeout(resolve, time));
 }
