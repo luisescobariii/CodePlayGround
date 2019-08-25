@@ -6,9 +6,7 @@ const Algorithms = {
     Selection: 'Selection',
     Bubble: 'Bubble',
 };
-const ResultValues = {
-    counts: [10000, 40000, 60000, 100000, 400000, 700000, 800000]
-};
+const ResultValues = {};
 
 var worker;
 
@@ -17,7 +15,7 @@ async function RunTests() {
     if (input != '') {
         ResultValues.counts = input.split(',');
     } else {
-        ResultValues.counts = [100, 1000, 10000, 100000];
+        ResultValues.counts = [10000, 40000, 60000, 100000, 400000, 700000, 800000];
     }
     worker = new Worker('worker.js');    
     worker.onmessage = e => {
@@ -25,6 +23,7 @@ async function RunTests() {
         ResultValues[alg][i] = duration;
         console.clear();
         console.table(ResultValues);
+        console.table(FormatResultValues());
         UpdateChartData();
     };
     
@@ -42,8 +41,6 @@ async function RunTests() {
         }
     }
 }
-
-RunTests();
 
 // CHARTS
 
@@ -210,4 +207,16 @@ function GetShuffledVector(len) {
 
 function Sleep (time) {
     return new Promise(resolve => setTimeout(resolve, time));
+}
+
+function FormatResultValues() {
+    let result = {};
+    for (let key of Object.keys(ResultValues)) {
+        if (key == 'counts') {
+            result[key] = ResultValues[key];
+        } else {
+            result[key] = ResultValues[key].map(v => FormatDuration(v));
+        }
+    }
+    return result;
 }
