@@ -19,9 +19,9 @@ async function SortVector(vector, algorithm, index) {
         case 'Quick': selectedAlgorithm = QuickSort; break;
     }
     
-    beginTime = window.performance.now();
+    beginTime = self.performance.now();
     let sortedVector = selectedAlgorithm(vector);
-    endTime = window.performance.now();
+    endTime = self.performance.now();
     //LogVector(sortedVector);
     
     postMessage({
