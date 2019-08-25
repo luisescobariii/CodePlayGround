@@ -17,6 +17,8 @@ async function RunTests() {
     worker.onmessage = e => {
         let {duration, alg, i} = e.data;
         ResultValues[alg][i] = duration;
+        console.clear();
+        console.table(ResultValues);
         UpdateChartData();
     };
     
@@ -32,8 +34,7 @@ async function RunTests() {
         for (let alg of Object.keys(Algorithms)) {
             worker.postMessage({ vector: vectors[i], alg: alg, i: i });
         }
-    }    
-    console.table(ResultValues);
+    }
 }
 
 
@@ -161,7 +162,6 @@ function CreateCharts() {
     Charts.push(new ApexCharts(document.querySelector("#chart3"), options));
     
     Charts.forEach(c => c.render());
-    console.log(ChartConfigs);
 }
 
 // UTILITIES
