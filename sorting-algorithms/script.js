@@ -168,14 +168,16 @@ function CreateCharts() {
 
 function FormatDuration(duration) {
     let micros = Math.floor(duration % 1000);
-    let millis = Math.floor(duration / 1000);
-    let seconds = Math.floor(duration / 1000000);
-    let minutes = Math.floor(duration / 60000000);
+    let millis = Math.floor((duration / 1000) % 1000);
+    let seconds = Math.floor((duration / 1000000) % 60);
+    let minutes = Math.floor((duration / 60000000) % 60);
+    let hours = Math.floor(duration / 3600000000);
     
     let time = `${micros}μs`;
-    if (millis > 0) { time = `${millis}ms ` + time; }
-    if (seconds > 0) { time = `${seconds}s ` + time; }
-    if (minutes > 0) { time = `${minutes}m ` + time; }
+    if (millis > 0) { time = `${millis}ms ${time}`; }
+    if (seconds > 0) { time = `${seconds}s ${time}`; }
+    if (minutes > 0) { time = `${minutes}m ${time}`; }
+    if (hours > 0) { time = `${hours}h ${time}`; }
     
     return time;
 }
