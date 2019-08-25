@@ -28,8 +28,8 @@ async function RunTests() {
     
     let vectors = ResultValues.counts.map(c => GetShuffledVector(c));
     
-    for (let alg of Object.keys(Algorithms)) {
-        for (let i = 0; i < vectors.length; i++) {
+    for (let i = 0; i < vectors.length; i++) {
+        for (let alg of Object.keys(Algorithms)) {
             worker.postMessage({ vector: vectors[i], alg: alg, i: i });
         }
     }    
