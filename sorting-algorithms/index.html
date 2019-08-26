@@ -9,6 +9,7 @@
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
     <link rel="icon" href="../favicon.ico" type="image/x-icon">
     
+    <link rel="stylesheet" href="../lib/spectre/spectre.min.css">
     <link rel="stylesheet" href="../lib/apexcharts/apexcharts.css">
     <link rel="stylesheet" href="style.css">
     
@@ -16,22 +17,26 @@
     <script defer src="script.js"></script>
 </head>
 <body>
-    <form action="javascript:RunTests()">
-        <label><input type="checkbox" id="inSplitCounts" />Split Lengths</label>
-        <label><input type="checkbox" id="inSplitAlgorithms" />Split Algorithms</label>
-        <label><input type="checkbox" id="inStrings" />String Vectors</label>
-        <br>
-        <label><input type="checkbox" class="algorithm" name="Default" checked />Default</label>
-        <label><input type="checkbox" class="algorithm" name="Quick" checked />Quick</label>
-        <label><input type="checkbox" class="algorithm" name="Merge" checked />Merge</label>
-        <label><input type="checkbox" class="algorithm" name="Shell" checked />Shell</label>
-        <label><input type="checkbox" class="algorithm" name="Radix" checked />Radix</label>
-        <label><input type="checkbox" class="algorithm" name="Insertion" />Insertion</label>
-        <label><input type="checkbox" class="algorithm" name="Selection" />Selection</label>
-        <label><input type="checkbox" class="algorithm" name="Bubble" />Bubble</label>
-        <br>
-        <input type="text" id="inCounts" placeholder="Comma separated list of array lengths">
-        <button type="submit">RUN</button>
+    <form action="javascript:RunTests()" class="form-inline">
+        <div class="inline-row">
+            <label class="form-checkbox"><input type="checkbox" id="inSplitCounts" /><i class="form-icon"></i>Split Lengths</label>
+            <label class="form-checkbox"><input type="checkbox" id="inSplitAlgorithms" /><i class="form-icon"></i>Split Algorithms</label>
+            <label class="form-checkbox"><input type="checkbox" id="inStrings" /><i class="form-icon"></i>String Vectors</label>
+        </div>
+        <div class="inline-row">
+            <label class="form-checkbox"><input type="checkbox" class="algorithm" name="Default" checked /><i class="form-icon"></i>Default</label>
+            <label class="form-checkbox"><input type="checkbox" class="algorithm" name="Quick" checked /><i class="form-icon"></i>Quick</label>
+            <label class="form-checkbox"><input type="checkbox" class="algorithm" name="Merge" checked /><i class="form-icon"></i>Merge</label>
+            <label class="form-checkbox"><input type="checkbox" class="algorithm" name="Shell" checked /><i class="form-icon"></i>Shell</label>
+            <label class="form-checkbox"><input type="checkbox" class="algorithm" name="Radix" checked /><i class="form-icon"></i>Radix</label>
+            <label class="form-checkbox"><input type="checkbox" class="algorithm" name="Insertion" /><i class="form-icon"></i>Insertion</label>
+            <label class="form-checkbox"><input type="checkbox" class="algorithm" name="Selection" /><i class="form-icon"></i>Selection</label>
+            <label class="form-checkbox"><input type="checkbox" class="algorithm" name="Bubble" /><i class="form-icon"></i>Bubble</label>
+        </div>
+        <div class="inline-row">
+            <input type="text" id="inCounts" class="form-input mr-2" placeholder="Comma separated list of array lengths">
+            <button type="submit" class="btn btn-primary">RUN</button>
+        </div>
     </form>
     <div class="row">
         <div id="chart0" class="chart"></div>

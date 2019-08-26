@@ -117,7 +117,12 @@ function UpdateChartData() {
 function CreateCharts() {
     let options = {
         chart: {
-            type: 'bar'
+            type: 'bar',
+            background: 'black'
+        },
+        theme: {
+            mode: 'dark',
+            palette: 'palette1'
         },
         plotOptions: {
             bar: {

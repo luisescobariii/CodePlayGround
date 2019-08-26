@@ -1,12 +1,19 @@
-html {
+body {
     height: 100%;
     background: black;
     color: #888888;
 }
 form input[type="text"] {
+    background: black;
+    border-color: #444;
+    color: white;
     width: 300px;
 }
-.row {
+.form-checkbox .form-icon, .form-radio .form-icon {
+    background: black;
+    border-color: #444;
+}
+.row, .inline-row {
     display: flex;
 }
 .c .row, 
