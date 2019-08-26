@@ -9,6 +9,12 @@ function initInterface() {
   btnShuffle.mousePressed(() => changeAlgorithm('Bubble'));
   btnShuffle = createButton('Selection');
   btnShuffle.mousePressed(() => changeAlgorithm('Selection'));
+  btnShuffle = createButton('Insertion');
+  btnShuffle.mousePressed(() => changeAlgorithm('Insertion'));
+  btnShuffle = createButton('Shell');
+  btnShuffle.mousePressed(() => changeAlgorithm('Shell'));
+  btnShuffle = createButton('Radix');
+  btnShuffle.mousePressed(() => changeAlgorithm('Radix'));
   btnShuffle = createButton('Quick');
   btnShuffle.mousePressed(() => changeAlgorithm('Quick'));
 }
@@ -19,6 +25,9 @@ function changeAlgorithm(name) {
     case 'Bubble': algorithm = new Bubble(); break;
     case 'Selection': algorithm = new Selection(); break;
     case 'Quick': algorithm = new Quick(); break;
+    case 'Shell': algorithm = new Shell(); break;
+    case 'Radix': algorithm = new Radix(); break;
+    case 'Insertion': algorithm = new Insertion(); break;
   }
   loop();
 }
