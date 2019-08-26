@@ -1,9 +1,23 @@
-form input {
+html {
+    height: 100%;
+    background: black;
+    color: #888888;
+}
+form input[type="text"] {
     width: 300px;
 }
 .row {
     display: flex;
 }
+.c .row, 
+.cc .row {
+    flex-direction: column;
+}
 .chart {
+    display: inline-block;
     width: 50%;
+}
+.c .chart, 
+.cc .chart {
+    width: 100%;
 }

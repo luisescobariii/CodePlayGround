@@ -17,17 +17,31 @@ async function SortVector(vector, algorithm, index) {
         case 'Shell': selectedAlgorithm = ShellSort; break;
         case 'Merge': selectedAlgorithm = MergeSort; break;
         case 'Quick': selectedAlgorithm = QuickSort; break;
+        case 'Default': selectedAlgorithm = DefaultSort; break;
+        case 'Radix': selectedAlgorithm = radixSort; break;
     }
     
     beginTime = self.performance.now();
     let sortedVector = selectedAlgorithm(vector);
     endTime = self.performance.now();
+
+    let isCorrect = true;
+    for (let i = 1; i < sortedVector.length; i++) {
+        if (sortedVector[i] < sortedVector[i - 1]) {
+            isCorrect = false;
+            break;
+        }
+    }
+    if (!sortedVector || sortedVector.length == 0) {
+        isCorrect = false;
+    }
     //LogVector(sortedVector);
     
     postMessage({
         duration: Math.floor((endTime - beginTime) * 1000),
         alg: algorithm,
-        i: index
+        i: index,
+        test: isCorrect
     });
 }
 
@@ -105,46 +119,101 @@ function ShellSort(vector) {
 // Begin MergeSort
 
 function MergeSort(vector) {
-    if(vector.length <= 1) { return vector; }    
-    var { leftHalf, rigthHalf } = SplitList(vector);
-    return JointLists(MergeSort(leftHalf), MergeSort(rigthHalf));
+    if(vector.length == 1 ) { return vector; }
+  
+    let middle = Math.floor(vector.length / 2);
+    let left = vector.slice(0, middle);
+    let right = vector.slice(middle);
+  
+    left = MergeSort(left);
+    right = MergeSort(right);
+      
+    return Merge(left, right);
 }
-
-function SplitList(vector){
-    if (vector.length == 0) return {leftHalf : [], rigthHalf: []};
-    if (vector.length == 1) return {leftHalf : vector , rigthHalf : []};
-    var index = Math.floor(vector.length / 2);
-    return {leftHalf : vector.slice(0, index), rigthHalf : vector.slice(index)};
-}
-
-function JointLists(vector1, vector2){
-    var [result, i, j] = [[], 0, 0];
-    while(true){
-        if(vector1[i] < vector2[j]){
-            result.push(vector1[i]);
-            i++;
+  
+function Merge(left, right) {
+    let vector = [];
+    let l = 0;
+    let r = 0;
+  
+    while(l<left.length && r<right.length) {
+        if(left[l] > right[r]) {  
+            vector.push(right[r]);
+            r++;
         } else {
-            result.push(vector2[j]);
-            j++;
+            vector.push(left[l]);
+            l++;
         }
-        if(i == vector1.length || j == vector2.length) { break; }
     }
-    if(i < vector1.length) return result.concat(vector1.slice(i));
-    if(j < vector2.length) return result.concat(vector2.slice(j));
-    return result;
+    while(l < left.length) {
+        vector.push(left[l]);
+        l++;
+    }
+    while(r < right.length) {
+        vector.push(right[r]);
+        r++;
+    }
+    return vector;
 }
 
 // End MergeSort
 
 function QuickSort(vector) {
-    if (vector.length == 0) { return []; }
-    let left = [], right = [], pivot = vector[0];
-    for (let i = 1; i < vector.length; i++) {
-        if(vector[i] < pivot) {
-            left.push(vector[i]);
+    if (vector.length < 2) { return vector; }
+    const pivot = vector[Math.floor(Math.random() * vector.length)];
+
+    let left = [];
+    let right = [];
+    let equal = [];
+
+    for (let value of vector) {
+        if (value < pivot) {
+            left.push(value);
+        } else if (value > pivot) {
+            right.push(value);
         } else {
-            right.push(vector[i]);
+            equal.push(value);
         }
-    };
-    return [...QuickSort(left), pivot, ...QuickSort(right)];
+    }
+    return [
+        ...QuickSort(left),
+        ...equal,
+        ...QuickSort(right)
+    ];
 }
+
+  function DefaultSort(vector) {
+      return vector.sort((a,b) => a - b);
+  }
+
+
+  function getPosition(num, place){
+    return  Math.floor(Math.abs(num)/Math.pow(10,place))% 10
+   }   // gives back bucket index  
+   
+   
+   function getMax(arr){
+     let max=0;
+     for(let num of arr){
+       if(max < num.toString().length){
+         max = num.toString().length
+        }
+      }
+     return max
+   }  
+    function radixSort(arr){
+      
+      const max = getMax(arr);
+      
+      for(let i=0;i<max;i++){
+          let buckets = Array.from({length:10},()=>[]) // creating 10 empty arrays
+          
+        for(let j=0;j<arr.length;j++){
+        
+            buckets[getPosition(arr[j],i)].push(arr[j]); //push the number into desired
+                                                        // bucket
+        }
+        arr = [].concat(...buckets); 
+      }
+      return arr
+   }

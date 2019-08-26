@@ -1,17 +1,16 @@
-const Algorithms = {
-    Quick: 'Quick',
-    Merge: 'Merge',
-    Shell: 'Shell',
-    Insertion: 'Insertion',
-    Selection: 'Selection',
-    Bubble: 'Bubble',
-};
-const ResultValues = {};
-
-var worker;
+var Algorithms, ResultValues, worker, warnings;
 
 async function RunTests() {
+    ResultValues = {};
+    warnings = [];
     let input = document.getElementById('inCounts').value.trim();
+    Algorithms = {};
+    let checks = document.querySelectorAll('input.algorithm').forEach(check => {
+        if (check.checked) {
+            let name = check.name;
+            Algorithms[name] = name;
+        }
+    });
     if (input != '') {
         ResultValues.counts = input.split(',').map(v => v * 1);
     } else {
@@ -19,11 +18,15 @@ async function RunTests() {
     }
     worker = new Worker('worker.js');    
     worker.onmessage = e => {
-        let {duration, alg, i} = e.data;
+        let {duration, alg, i, test} = e.data;
         ResultValues[alg][i] = duration;
+        if (!test) {
+            warnings.push(`${alg} ${i} incorrect`);
+        }
         console.clear();
         console.table(ResultValues);
         console.table(FormatResultValues());
+        warnings.forEach(w => console.warn(w));
         UpdateChartData();
     };
     
@@ -47,8 +50,10 @@ async function RunTests() {
 var Charts, ChartConfigs;
 
 function UpdateChartData() {
-    let half = Math.floor(ResultValues.counts.length / 2);
+    let half = Math.ceil(ResultValues.counts.length / 2);
     
+    if (ChartConfigs.shorts.length == ResultValues.counts.length) { half = ResultValues.counts.length; }
+
     let data = [];
     for (let alg of ChartConfigs.fasts) {
         let values = [];
@@ -59,16 +64,29 @@ function UpdateChartData() {
     }
     
     Charts[0].updateSeries(data);
-    
+    if (Charts.length < 2) { return; }    
     data = [];
-    for (let alg of ChartConfigs.fasts) {
-        let values = [];
-        for (let i = half; i < ResultValues.counts.length; i++) {
-            values.push(ResultValues[alg][i]);
+
+    if (!ChartConfigs.splitCounts && ChartConfigs.splitAlgorithms) {
+        for (let alg of ChartConfigs.slows) {
+            let values = [];
+            for (let i = 0; i < half; i++) {
+                values.push(ResultValues[alg][i]);
+            }
+            data.push({ name: alg, data: values });
+        }        
+    } else {
+        for (let alg of ChartConfigs.fasts) {
+            let values = [];
+            for (let i = half; i < ResultValues.counts.length; i++) {
+                values.push(ResultValues[alg][i]);
+            }
+            data.push({ name: alg, data: values });
         }
-        data.push({ name: alg, data: values });
     }
     Charts[1].updateSeries(data);
+    
+    if (Charts.length < 3) { return; }
     
     data = [];
     for (let alg of ChartConfigs.slows) {
@@ -134,16 +152,23 @@ function CreateCharts() {
     ChartConfigs = {slows: [], fasts: [], shorts: [], longs: []}
     
     let keys = Object.keys(Algorithms);
-    let half = Math.floor(keys.length / 2);
+    let half = Math.ceil(keys.length / 2);
     for (let i = 0; i < keys.length; i++) {
         if (i < half) {
             ChartConfigs.fasts.push(keys[i]);
         } else {
             ChartConfigs.slows.push(keys[i]);
         }
+    }    
+    let chartClass = '';
+    ChartConfigs.splitAlgorithms = document.getElementById('inSplitAlgorithms').checked;
+    if (!ChartConfigs.splitAlgorithms) {
+        chartClass += 'c';
+        ChartConfigs.fasts = [...ChartConfigs.fasts, ...ChartConfigs.slows];
+        ChartConfigs.slows = [];
     }
     
-    half = Math.floor(ResultValues.counts.length / 2);
+    half = Math.ceil(ResultValues.counts.length / 2);
     for (let i = 0; i < ResultValues.counts.length; i++) {
         if (i < half) {
             ChartConfigs.shorts.push(ResultValues.counts[i]);
@@ -152,16 +177,33 @@ function CreateCharts() {
         }
     }
     
-    Charts = [];
+    ChartConfigs.splitCounts = document.getElementById('inSplitCounts').checked;
+    if (!ChartConfigs.splitCounts) {
+        chartClass += 'c';
+        ChartConfigs.shorts = [...ChartConfigs.shorts, ...ChartConfigs.longs];
+        ChartConfigs.longs = [];
+    }
+
+    document.querySelector('body').className = chartClass;
     
+    Charts = [];
+
     options.xaxis.categories = ChartConfigs.shorts;
     Charts.push(new ApexCharts(document.querySelector("#chart0"), options));
-    options.xaxis.categories = ChartConfigs.longs;
-    Charts.push(new ApexCharts(document.querySelector("#chart1"), options));
-    options.xaxis.categories = ChartConfigs.shorts;
-    Charts.push(new ApexCharts(document.querySelector("#chart2"), options));
-    options.xaxis.categories = ChartConfigs.longs;
-    Charts.push(new ApexCharts(document.querySelector("#chart3"), options));
+    if (ChartConfigs.splitCounts || ChartConfigs.splitAlgorithms) {
+        if (ChartConfigs.splitCounts) {
+            options.xaxis.categories = ChartConfigs.longs;
+            Charts.push(new ApexCharts(document.querySelector("#chart1"), options));
+        }
+        if (ChartConfigs.splitAlgorithms) {
+            options.xaxis.categories = ChartConfigs.shorts;
+            Charts.push(new ApexCharts(document.querySelector("#chart2"), options));
+            if (ChartConfigs.splitCounts) {
+                options.xaxis.categories = ChartConfigs.longs;
+                Charts.push(new ApexCharts(document.querySelector("#chart3"), options));
+            }
+        }
+    }
     
     Charts.forEach(c => c.render());
 }

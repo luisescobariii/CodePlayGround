@@ -17,6 +17,19 @@
 </head>
 <body>
     <form action="javascript:RunTests()">
+        <label><input type="checkbox" id="inSplitCounts" />Split Lengths</label>
+        <label><input type="checkbox" id="inSplitAlgorithms" />Split Algorithms</label>
+        <label><input type="checkbox" id="inSplitAlgorithms" />Split Algorithms</label>
+        <br>
+        <label><input type="checkbox" class="algorithm" name="Default" checked />Default</label>
+        <label><input type="checkbox" class="algorithm" name="Quick" checked />Quick</label>
+        <label><input type="checkbox" class="algorithm" name="Merge" checked />Merge</label>
+        <label><input type="checkbox" class="algorithm" name="Shell" checked />Shell</label>
+        <label><input type="checkbox" class="algorithm" name="Radix" checked />Radix</label>
+        <label><input type="checkbox" class="algorithm" name="Insertion" />Insertion</label>
+        <label><input type="checkbox" class="algorithm" name="Selection" />Selection</label>
+        <label><input type="checkbox" class="algorithm" name="Bubble" />Bubble</label>
+        <br>
         <input type="text" id="inCounts" placeholder="Comma separated list of array lengths">
         <button type="submit">RUN</button>
     </form>
