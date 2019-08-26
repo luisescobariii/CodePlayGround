@@ -35,8 +35,13 @@ async function RunTests() {
     }
     CreateCharts();
     UpdateChartData();
-    
-    let vectors = ResultValues.counts.map(c => GetShuffledVector(c));
+    let stringVectors = document.getElementById('inStrings').checked;
+    let vectors;
+    if (stringVectors) {
+        vectors = ResultValues.counts.map(c => GetShuffledVector(c).map(v => v.toString()));
+    } else {
+        vectors = ResultValues.counts.map(c => GetShuffledVector(c));
+    }
     
     for (let i = 0; i < vectors.length; i++) {
         for (let alg of Object.keys(Algorithms)) {

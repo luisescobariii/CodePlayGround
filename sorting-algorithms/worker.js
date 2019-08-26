@@ -26,6 +26,7 @@ async function SortVector(vector, algorithm, index) {
     endTime = self.performance.now();
 
     let isCorrect = true;
+    /*
     for (let i = 1; i < sortedVector.length; i++) {
         if (sortedVector[i] < sortedVector[i - 1]) {
             isCorrect = false;
@@ -35,6 +36,7 @@ async function SortVector(vector, algorithm, index) {
     if (!sortedVector || sortedVector.length == 0) {
         isCorrect = false;
     }
+    */
     //LogVector(sortedVector);
     
     postMessage({
