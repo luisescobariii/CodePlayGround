@@ -4,7 +4,7 @@ class Radix extends Algorithm {
         super();
         this.vector = [...values];
         this.max = this.getMax();
-        this.index = 0;
+        this.swaped = 0;
         this.buckets = Array.from({length: 10}, () => []);
         this.counter = 0;
         this.dumping = -1;
@@ -12,12 +12,13 @@ class Radix extends Algorithm {
     }
     
     step() {
+        this.iterations++;
         this.checks++;
-        if (this.index < this.max) {
+        if (this.swaped < this.max) {
             this.checks++;
             if (this.counter < count) {
                 this.swaps++;
-                this.buckets[this.getPosition(this.vector[this.counter],this.index)].push(this.vector[this.counter]);
+                this.buckets[this.getPosition(this.vector[this.counter],this.swaped)].push(this.vector[this.counter]);
                 values = [].concat(...this.buckets);
                 this.counter++;
             } else {
@@ -25,7 +26,7 @@ class Radix extends Algorithm {
                 values = [].concat(...this.buckets);
                 this.buckets = Array.from({length: 10}, () => []);
                 this.counter = 0;
-                this.index++;
+                this.swaped++;
             }
         } else {
             this.complete();

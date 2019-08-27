@@ -9,6 +9,7 @@ class Selection extends Algorithm {
   }
   
   step() {
+    this.iterations++;
     this.checks++;
     this.index++;
     if (this.index < count) {

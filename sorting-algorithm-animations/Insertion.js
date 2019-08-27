@@ -3,11 +3,12 @@ class Insertion extends Algorithm {
     constructor() {
         super();
         this.index = 1;
-        this.counter = this.index;
+        this.counter = this.index - 1;
         this.temp = values[this.index];
     }
 
     step() {
+        this.iterations++;
         this.checks++;
         if (this.index < count) {
             this.checks++;
@@ -27,17 +28,4 @@ class Insertion extends Algorithm {
         }
     }
 
-}
-
-function InsertionSort(vector) {
-    vector = [...vector];
-    let temp, j, n = vector.length;
-    for (let i = 1; i < n; i++) {
-        temp = vector[i];
-        for (j = i - 1; j >= 0 && vector[j] > temp; j--) {
-            vector[j + 1] = vector[j];
-        }
-        vector[j + 1] = temp;
-    }
-    return vector;
 }

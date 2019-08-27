@@ -9,6 +9,7 @@ class Shell extends Algorithm {
     }
 
     step() {
+        this.iterations++;
         this.checks++;
         if (this.gap > 0) {
             this.checks++;

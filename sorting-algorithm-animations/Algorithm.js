@@ -2,10 +2,12 @@ class Algorithm {
   
   constructor() {
     this.done = false;
-    this.index = count;
+    this.swaped = count;
     this.swapped = -1;
     this.swaps = 0;
     this.checks = 0;
+    this.index = count;
+    this.iterations = 0;
     this.begin = new Date();
   }
   

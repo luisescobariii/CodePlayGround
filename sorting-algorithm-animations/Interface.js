@@ -2,7 +2,7 @@ var btnShuffle, btnBubble;
 
 function initInterface() {
   textSize(30);
-  algorithm = { done: true, swaps: 0, checks: 0, begin: new Date() };
+  algorithm = { done: true, swaps: 0, checks: 0, iterations: 0, begin: new Date() };
   btnShuffle = createButton('Shuffle');
   btnShuffle.mousePressed(() => changeAlgorithm('Shuffle'));
   btnShuffle = createButton('Bubble');
@@ -36,11 +36,12 @@ function drawInterface() {
   fill(255);
   stroke(0);
   strokeWeight(5);
-  text(`Checks: ${algorithm.checks}`, 10, 30);
-  text(`Swaps: ${algorithm.swaps}`, 10, 60);
+  text(`Iterations: ${algorithm.iterations}`, 10, 30);
+  text(`Checks: ${algorithm.checks}`, 10, 60);
+  text(`Swaps: ${algorithm.swaps}`, 10, 90);
   let duration = new Date(new Date().getTime() - algorithm.begin.getTime());
   let minutes = duration.getMinutes().toString().padStart(2, '0');
   let seconds = duration.getSeconds().toString().padStart(2, '0');
   let millis = duration.getMilliseconds().toString().padStart(3, '0');
-  text(`Time: ${minutes}:${seconds}.${millis}`, 10, 90);
+  text(`Time: ${minutes}:${seconds}.${millis}`, 10, 120);
 }
