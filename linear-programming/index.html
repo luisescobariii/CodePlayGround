@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Linear Programming</title>
+    
+    <link rel="stylesheet" href="../lib/spectre/spectre.min.css">
+    
+    <script async defer src="../lib/jsLPSolver/solver.js"></script>
+    <script defer src="script.js"></script>    
+</head>
+<body>
+    
+    <div class="container">
+        <div class="columns">
+            <div class="column col-9">
+                
+                <form action="javascript:Solve()">
+                    
+                    <div class="columns">
+                        
+                        <div class="column">
+                            <p><b>1) </b>Enter the names of your variables and their properties. One value per row.</p>
+                            
+                            <div class="columns form-group">
+                                <div class="column">
+                                    
+                                    <div class="form-group">
+                                        <label for="inVariables" class="form-label">Variables</label>
+                                        <textarea id="inVariables" rows="5" class="form-input"></textarea>
+                                    </div>
+                                    
+                                </div>
+                                <div class="column">
+                                    
+                                    <div class="form-group">
+                                        <label for="inProperties" class="form-label">Properties</label>
+                                        <textarea id="inProperties" rows="5" class="form-input"></textarea>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <button type="button" id="btnInputTable" class="btn btn-primary" onclick="UpdateInputTable()">UPDATE INPUT TABLE</button>                        
+                            </div>
+                            
+                            <br>
+                            <p><b>2) </b>Fill in the values of each property for every variable.</p>
+                            
+                            <div class="form-group">
+                                <table id="tblInput" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Variables</th>
+                                            <th>Property 1</th>
+                                            <th>Property 2</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>Variable 1</th>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Variable 2</th>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="column">
+                            <p><b>3) </b>Add constraints.</p>
+                            
+                            <table id="tblConstraints" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Property</th>
+                                        <th>Contraint</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Property 1</td>
+                                        <td>
+                                            <select class="form-select">
+                                                <option value="none">None</option>
+                                                <option value="min">Minimum</option>
+                                                <option value="max">Maximum</option>
+                                                <option value="equal">Equal</option>
+                                            </select>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <br>
+                            <p><b>4) </b>Select desired optimization.</p>
+                            
+                            <div class="columns form-group">
+                                <div class="column">
+                                    
+                                    <div class="form-group">
+                                        <label for="inOptimize" class="form-label">Optimize</label>
+                                        <select id="inOptimize" class="form-select">
+                                            <option >Property 1</option>
+                                            <option >Property 2</option>
+                                        </select>
+                                    </div>
+                                    
+                                </div>
+                                <div class="column">
+                                    
+                                    <div class="form-group">
+                                        <label for="inOpType" class="form-label">Optimization Type</label>
+                                        <select id="inOpType" class="form-select">
+                                            <option value="max">Maximize</option>
+                                            <option value="min">Minimize</option>
+                                        </select>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">SOLVE</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </form>
+                
+                
+            </div>
+            <div class="column col-3">
+                
+                <h4>Result</h4>
+                <pre id="output"></pre>
+
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
