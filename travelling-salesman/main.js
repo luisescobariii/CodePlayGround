@@ -5,12 +5,14 @@ function setup() {
   background(0);
 
   for (let i = 0; i < 10; i++) {
-    cities.push(new pVector(Math.random() * width, Math.random() * heigth));
+    cities.push(createVector(Math.random() * width, Math.random() * heigth));
   }
 }
 
 function draw() {
+  stroke(255);
+  strokeWeight(4);
   for (let city of cities) {
-    ellipse(city.x, city.y, 5);
+    ellipse(city.x, city.y, 12);
   }
 }
