@@ -76,5 +76,5 @@ async function Solve() {
 
     let solution = solver.Solve(model);
 
-    document.getElementById('output').innerHTML = JSON.stringify(model, null, 4) + '\n\n' + JSON.stringify(solution, null, 4);
+    document.getElementById('output').innerHTML = JSON.stringify(solution, null, 4);    
 }
