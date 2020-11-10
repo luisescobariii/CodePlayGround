@@ -205,7 +205,7 @@ function reduce({states, inputs, data}) {
             partitions[0].push(state);
         }
     }
-    let iterationLimit = 100;
+    let iterationLimit = 1000;
     let complete = false;
     while(!complete && iterationLimit-- > 0) {
         complete = true;
@@ -246,7 +246,15 @@ function reduce({states, inputs, data}) {
             newData[newStates[i]][input] = newStates[index];
         }
     }
-    const result = { states: newStates, inputs, data: newData };
+    const result = { states: newStates.sort((a, b) => {
+        if (a === states[0]) { return -1; }
+        if (b === states[0]) { return 1; }
+        if (a.includes(states[0])) { return -1; }
+        if (b.includes(states[0])) { return 1; }
+        if (a.includes('Error')) { return 1; }
+        if (b.includes('Error')) { return -1; }
+        return 0;
+    }), inputs, data: newData };
     drawAutomatonTable('reduceTable', result);
     rGraph = drawAutomaton(result);
     changeGraph(currentGraphType);
