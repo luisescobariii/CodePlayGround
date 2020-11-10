@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automaton</title>
+
+    <link rel="stylesheet" href="../lib/spectre/spectre.min.css">
+    <link rel="stylesheet" href="../lib/spectre/icons.min.css">
+    <link rel="stylesheet" href="./style.css">
+
+    <script defer src="../lib/p5js/p5.js"></script>
+
+    <script defer src="./graph/SelfConnection.js"></script>
+    <script defer src="./graph/Node.js"></script>
+    <script defer src="./graph/Graph.js"></script>
+    <script defer src="./graph/sketch.js"></script>
+
+    <script defer src="./script.js"></script>
+
+</head>
+<body>
+    <div class="columns">
+        <div class="column scroller">
+            <h3>Non-Deterministic (input)</h3>
+            <table class="table table-celled" id="input-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2">
+                            States
+                            <button type="button" onclick="addState()" class="btn btn-action btn-sm">
+                                <i class="icon icon-plus"></i>
+                            </button>
+                        </th>
+                        <th colspan="2">
+                            Inputs
+                            <button type="button" onclick="addInput()" class="btn btn-action btn-sm">
+                                <i class="icon icon-plus"></i>
+                            </button>
+                        </th>
+                        <th rowspan="2">Accept</th>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">0</td>
+                        <td contenteditable="true">1</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true">A</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">B</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="alert-message" class="toast toast-error d-none"></div>
+            <div id="info-message" class="toast toast-info d-none"></div>
+            <br>
+            <button type="button" class="btn btn-primary" onclick="validateInput()">Validate</button>
+            <br>
+            <br>
+            <h3>Deterministic</h3>
+            <div id="outTable"></div>
+            <br>
+            <h3>Reduced</h3>
+            <div id="reduceTable"></div>
+        </div>
+        <div class="column p-0">
+            <ul class="tab tab-block">
+                <li class="tab-item c-hand">
+                    <a id="graph-tab-0" onclick="changeGraph(0)">Non-Deterministic</a>
+                </li>
+                <li class="tab-item c-hand">
+                    <a id="graph-tab-1" onclick="changeGraph(1)">Deterministic</a>
+                </li>
+                <li class="tab-item c-hand">
+                    <a id="graph-tab-2" onclick="changeGraph(2)">Reduced</a>
+                </li>
+            </ul>
+            <div id="p5canvas"></div>
+        </div>
+    </div>
+
+</body>
+</html>
